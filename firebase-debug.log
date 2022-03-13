@@ -1,0 +1,87 @@
+[debug] [2022-03-13T10:57:22.345Z] ----------------------------------------------------------------------
+[debug] [2022-03-13T10:57:22.347Z] Command:       D:\Program Files\nodejs\node.exe C:\Users\alpha\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy --only hosting
+[debug] [2022-03-13T10:57:22.347Z] CLI Version:   10.2.1
+[debug] [2022-03-13T10:57:22.347Z] Platform:      win32
+[debug] [2022-03-13T10:57:22.347Z] Node Version:  v14.17.6
+[debug] [2022-03-13T10:57:22.348Z] Time:          Sun Mar 13 2022 18:57:22 GMT+0800 (Singapore Standard Time)
+[debug] [2022-03-13T10:57:22.348Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2022-03-13T10:57:22.358Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2022-03-13T10:57:22.448Z] Object "" in "firebase.json" has unknown property: {"additionalProperty":"headers"}
+[debug] [2022-03-13T10:57:22.452Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2022-03-13T10:57:22.452Z] > authorizing via signed-in user (alphaxie1988@gmail.com)
+[debug] [2022-03-13T10:57:22.453Z] [iam] checking project password-by-xjl for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2022-03-13T10:57:22.453Z] > refreshing access token with scopes: []
+[debug] [2022-03-13T10:57:22.454Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2022-03-13T10:57:22.525Z] <<< HTTP RESPONSE 200 {"expires":"Mon, 01 Jan 1990 00:00:00 GMT","date":"Sun, 13 Mar 2022 10:57:23 GMT","cache-control":"no-cache, no-store, max-age=0, must-revalidate","pragma":"no-cache","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2022-03-13T10:57:22.546Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/password-by-xjl:testIamPermissions [none]
+[debug] [2022-03-13T10:57:22.546Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/password-by-xjl:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2022-03-13T10:57:23.079Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2022-03-13T10:57:23.079Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2022-03-13T10:57:23.816Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/password-by-xjl:testIamPermissions 200
+[debug] [2022-03-13T10:57:23.817Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/password-by-xjl:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2022-03-13T10:57:23.817Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/password-by-xjl [none]
+[debug] [2022-03-13T10:57:24.171Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/password-by-xjl 200
+[debug] [2022-03-13T10:57:24.171Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/password-by-xjl {"projectId":"password-by-xjl","projectNumber":"222442932183","displayName":"password-by-xjl","name":"projects/password-by-xjl","resources":{"hostingSite":"password-by-xjl","storageBucket":"password-by-xjl.appspot.com","locationId":"asia-southeast1"},"state":"ACTIVE"}
+[info] 
+[info] === Deploying to 'password-by-xjl'...
+[info] 
+[info] i  deploying hosting 
+[debug] [2022-03-13T10:57:24.175Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/password-by-xjl [none]
+[debug] [2022-03-13T10:57:24.678Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/password-by-xjl 200
+[debug] [2022-03-13T10:57:24.678Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/password-by-xjl {"projectId":"password-by-xjl","projectNumber":"222442932183","displayName":"password-by-xjl","name":"projects/password-by-xjl","resources":{"hostingSite":"password-by-xjl","storageBucket":"password-by-xjl.appspot.com","locationId":"asia-southeast1"},"state":"ACTIVE"}
+[debug] [2022-03-13T10:57:24.680Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/222442932183/sites/password-by-xjl/versions [none]
+[debug] [2022-03-13T10:57:24.680Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/222442932183/sites/password-by-xjl/versions {"config":{},"labels":{"deployment-tool":"cli-firebase"}}
+[debug] [2022-03-13T10:57:26.138Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/222442932183/sites/password-by-xjl/versions 200
+[debug] [2022-03-13T10:57:26.139Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/222442932183/sites/password-by-xjl/versions {"name":"projects/222442932183/sites/password-by-xjl/versions/b4fd27657d5c2e4a","status":"CREATED","config":{},"labels":{"deployment-tool":"cli-firebase"}}
+[info] i  hosting[password-by-xjl]: beginning deploy... 
+[info] i  hosting[password-by-xjl]: found 12 files in build 
+[debug] [2022-03-13T10:57:31.335Z] [hosting] hash cache [YnVpbGQ] stored for 12 files
+[debug] [2022-03-13T10:57:31.335Z] [hosting][hash queue][FINAL] {"max":5180,"min":9,"avg":476.0833333333333,"active":0,"complete":12,"success":12,"errored":0,"retried":0,"total":12,"elapsed":5183}
+[debug] [2022-03-13T10:57:31.336Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/222442932183/sites/password-by-xjl/versions/b4fd27657d5c2e4a:populateFiles [none]
+[debug] [2022-03-13T10:57:31.336Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/222442932183/sites/password-by-xjl/versions/b4fd27657d5c2e4a:populateFiles {"files":{"/asset-manifest.json":"f0bab1202a1a27b8b5913b8d713d3a811e1ba39fd99f9fd5d55efb00fafa27bd","/confetti.js":"a455bdaf31e64ce901c613f331069e0e7bdcd2c8d9f8dcb1b074098303312fbe","/favicon.ico":"eae62e993eb980ec8a25058c39d5a51feab118bd2100c4deebb2a9c158ec11f9","/manifest.json":"65d4aa66cd0b8963e88196705111adfccad2e8b80725b6a7a82ca8a9a0de8889","/index.html":"a2ac6be75cc0632efca243be9165f00ea466963ff8882c46a77403f8c06b55a2","/otp.html":"05f166cf90ce039f12ed5d9f7d736c5bfbcfb8a5914e6fc629bab07750894cfc","/service-worker.js":"eb5807553a7b2e46a42db1db5daa41b96435945d50a124361901e16db1401e6e","/static/js/main.f0be69e0.js":"12f2410dcc292a6e8da4057dce6171b51841f6a1487fda2135e189e703da5065","/jquery.min.js":"b298c976a71462fe8bb96d8e93b379d13f034b7c41e1595e237ec6231d074fdc","/static/js/main.f0be69e0.js.map":"990645ec7ae277f309af5830321d6ec4e566dc55c15d7a3e93188804669d139a","/commonpasswords.js":"209736ce1391685cc644da00e285a33999e01bd50b66f0386b0f59c11381f225","/leakedpasswords.js":"a0874e4862533ad63936bcc7b512495b34ea25d15186b0bf0c297611a523c841"}}
+[debug] [2022-03-13T10:57:32.627Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/222442932183/sites/password-by-xjl/versions/b4fd27657d5c2e4a:populateFiles 200
+[debug] [2022-03-13T10:57:32.627Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/222442932183/sites/password-by-xjl/versions/b4fd27657d5c2e4a:populateFiles {"uploadRequiredHashes":["eb5807553a7b2e46a42db1db5daa41b96435945d50a124361901e16db1401e6e","a2ac6be75cc0632efca243be9165f00ea466963ff8882c46a77403f8c06b55a2","990645ec7ae277f309af5830321d6ec4e566dc55c15d7a3e93188804669d139a"],"uploadUrl":"https://upload-firebasehosting.googleapis.com/upload/sites/password-by-xjl/versions/b4fd27657d5c2e4a/files"}
+[debug] [2022-03-13T10:57:32.628Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/password-by-xjl/versions/b4fd27657d5c2e4a/files/eb5807553a7b2e46a42db1db5daa41b96435945d50a124361901e16db1401e6e [none]
+[debug] [2022-03-13T10:57:32.628Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/password-by-xjl/versions/b4fd27657d5c2e4a/files/eb5807553a7b2e46a42db1db5daa41b96435945d50a124361901e16db1401e6e [stream]
+[debug] [2022-03-13T10:57:32.629Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/password-by-xjl/versions/b4fd27657d5c2e4a/files/a2ac6be75cc0632efca243be9165f00ea466963ff8882c46a77403f8c06b55a2 [none]
+[debug] [2022-03-13T10:57:32.629Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/password-by-xjl/versions/b4fd27657d5c2e4a/files/a2ac6be75cc0632efca243be9165f00ea466963ff8882c46a77403f8c06b55a2 [stream]
+[debug] [2022-03-13T10:57:32.630Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/password-by-xjl/versions/b4fd27657d5c2e4a/files/990645ec7ae277f309af5830321d6ec4e566dc55c15d7a3e93188804669d139a [none]
+[debug] [2022-03-13T10:57:32.630Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/password-by-xjl/versions/b4fd27657d5c2e4a/files/990645ec7ae277f309af5830321d6ec4e566dc55c15d7a3e93188804669d139a [stream]
+[debug] [2022-03-13T10:57:32.631Z] [hosting][populate queue][FINAL] {"max":1294,"min":1294,"avg":1294,"active":0,"complete":1,"success":1,"errored":0,"retried":0,"total":1,"elapsed":1297}
+[debug] [2022-03-13T10:57:32.631Z] [hosting] uploads queued: 3
+[debug] [2022-03-13T10:57:34.196Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/password-by-xjl/versions/b4fd27657d5c2e4a/files/a2ac6be75cc0632efca243be9165f00ea466963ff8882c46a77403f8c06b55a2 200
+[debug] [2022-03-13T10:57:34.196Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/password-by-xjl/versions/b4fd27657d5c2e4a/files/a2ac6be75cc0632efca243be9165f00ea466963ff8882c46a77403f8c06b55a2 [stream]
+[debug] [2022-03-13T10:57:34.390Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/password-by-xjl/versions/b4fd27657d5c2e4a/files/990645ec7ae277f309af5830321d6ec4e566dc55c15d7a3e93188804669d139a 200
+[debug] [2022-03-13T10:57:34.390Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/password-by-xjl/versions/b4fd27657d5c2e4a/files/990645ec7ae277f309af5830321d6ec4e566dc55c15d7a3e93188804669d139a [stream]
+[debug] [2022-03-13T10:57:34.798Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/password-by-xjl/versions/b4fd27657d5c2e4a/files/eb5807553a7b2e46a42db1db5daa41b96435945d50a124361901e16db1401e6e 200
+[debug] [2022-03-13T10:57:34.798Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/password-by-xjl/versions/b4fd27657d5c2e4a/files/eb5807553a7b2e46a42db1db5daa41b96435945d50a124361901e16db1401e6e [stream]
+[debug] [2022-03-13T10:57:34.798Z] [hosting][upload queue][FINAL] {"max":2171,"min":1569,"avg":1834.3333333333333,"active":0,"complete":3,"success":3,"errored":0,"retried":0,"total":3,"elapsed":2171}
+[info] +  hosting[password-by-xjl]: file upload complete 
+[debug] [2022-03-13T10:57:34.799Z] [hosting] deploy completed after 8660ms
+[debug] [2022-03-13T10:57:34.801Z] [
+  {
+    "config": {
+      "public": "build",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "site": "password-by-xjl"
+    },
+    "site": "password-by-xjl",
+    "version": "projects/222442932183/sites/password-by-xjl/versions/b4fd27657d5c2e4a"
+  }
+]
+[info] i  hosting[password-by-xjl]: finalizing version... 
+[debug] [2022-03-13T10:57:34.803Z] >>> [apiv2][query] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/222442932183/sites/password-by-xjl/versions/b4fd27657d5c2e4a updateMask=status
+[debug] [2022-03-13T10:57:34.803Z] >>> [apiv2][body] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/222442932183/sites/password-by-xjl/versions/b4fd27657d5c2e4a {"status":"FINALIZED"}
+[debug] [2022-03-13T10:57:36.027Z] <<< [apiv2][status] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/222442932183/sites/password-by-xjl/versions/b4fd27657d5c2e4a 200
+[debug] [2022-03-13T10:57:36.027Z] <<< [apiv2][body] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/222442932183/sites/password-by-xjl/versions/b4fd27657d5c2e4a {"name":"projects/222442932183/sites/password-by-xjl/versions/b4fd27657d5c2e4a","status":"FINALIZED","config":{},"labels":{"deployment-tool":"cli-firebase"},"createTime":"2022-03-13T10:57:26.330644Z","createUser":{"email":"alphaxie1988@gmail.com"},"finalizeTime":"2022-03-13T10:57:36.450243Z","finalizeUser":{"email":"alphaxie1988@gmail.com"}}
+[debug] [2022-03-13T10:57:36.027Z] [hosting] finalized version for password-by-xjl:[object Object]
+[info] +  hosting[password-by-xjl]: version finalized 
+[info] i  hosting[password-by-xjl]: releasing new version... 
+[debug] [2022-03-13T10:57:36.029Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/222442932183/sites/password-by-xjl/releases versionName=projects%2F222442932183%2Fsites%2Fpassword-by-xjl%2Fversions%2Fb4fd27657d5c2e4a
+[debug] [2022-03-13T10:57:36.029Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/222442932183/sites/password-by-xjl/releases {"message":null}
