@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Password Strength Meter</title>
+    <style>
+      body {
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+      }
+
+      form {
+        max-width: 400px;
+        padding: 2em;
+        border: 1px dashed #ddd
+      }
+
+      #pwd,
+      #userPwd,
+      #userID {
+        border-radius: 50px;
+        padding: 10px 20px;
+        border: 2px solid #999;
+      }
+
+      *:focus {
+        outline-style: none;
+      }
+
+      input {
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        font-size: x-large;
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 6px;
+        border: 1px solid #ddd;
+      }
+
+      #progressBar {
+        height: 20px;
+        width: 100%;
+        margin-top: 0.6em;
+        border-radius: 50px;
+        border: 2px solid #ddd
+      }
+
+      #progress-bar {
+        width: 0%;
+        height: 100%;
+        transition: width 500ms linear;
+        border-radius: 50px;
+        box-shadow: 0px 1px 5px #555
+      }
+
+      .progress-bar-danger {
+        background: #d00;
+      }
+      .progress-bar-dangerS {
+        background: rgb(221, 52, 0);
+      }
+
+      .progress-bar-warning {
+        background: #f50;
+      }
+      .progress-bar-warningS {
+        background: rgb(255, 174, 0);
+      }
+
+      .progress-bar-success {
+        background: #080;
+      }
+
+      .button {
+        cursor: pointer;
+        display: inline-block;
+        padding: 0.7em 1.7em;
+        margin: 0 0.3em 0.3em 0;
+        border-radius: 0.2em;
+        box-sizing: border-box;
+        text-decoration: none;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 400;
+        color: #FFFFFF;
+        background-color: #3369ff;
+        box-shadow: inset 0 -0.6em 1em -0.35em rgba(0, 0, 0, 0.17), inset 0 0.6em 2em -0.3em rgba(255, 255, 255, 0.15), inset 0 0 0em 0.05em rgba(255, 255, 255, 0.12);
+        text-align: center;
+        position: relative;
+      }
+
+      .button:active {
+        box-shadow: inset 0 0.6em 2em -0.3em rgba(0, 0, 0, 0.15), inset 0 0 0em 0.05em rgba(255, 255, 255, 0.12);
+      }
+
+      @media all and (max-width:30em) {
+        .button {
+          display: block;
+          margin: 0.4em auto;
+        }
+      }
+
+      body {
+        height: 100%;
+        background-color: lightgrey;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .parent {
+        height: 95vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .child {
+        border-radius: 10px;
+        padding: 30px;
+        background: white;
+        width: 500px;
+      }
+      .grey {
+        background-color:grey;
+        pointer-events:none
+      }
+    </style>
+    <script src="jquery.min.js"></script>
+    <script src="commonpasswords.js"></script>
+    <script src="leakedpasswords.js"></script>
+    <script src="confetti.js"></script>
+    <script>
+     // Convert a given string into number this is to prevent special character in password
+     function convertToNumber(e){for(var r=0,i=0;i<e.length;i++)r=(r<<5)-r+e.charCodeAt(i),r&=r;return r};
+
+    // similiarity compare the similiaity of 2 strings, return 1 if very similiar
+     function similarity(s1, s2) {
+        var longer = s1;
+        var shorter = s2;
+        if (s1.length < s2.length) {
+          longer = s2;
+          shorter = s1;
+        }
+        var longerLength = longer.length;
+        if (longerLength == 0) {
+          return 1.0;
+        }
+        return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
+      }
+      // Subfunction under similarity to calc this distance
+      function editDistance(s1, s2) {
+        s1 = s1.toLowerCase();
+        s2 = s2.toLowerCase();
+
+        var costs = new Array();
+        for (var i = 0; i <= s1.length; i++) {
+          var lastValue = i;
+          for (var j = 0; j <= s2.length; j++) {
+            if (i == 0)
+              costs[j] = j;
+            else {
+              if (j > 0) {
+                var newValue = costs[j - 1];
+                if (s1.charAt(i - 1) != s2.charAt(j - 1))
+                  newValue = Math.min(Math.min(newValue, lastValue),
+                    costs[j]) + 1;
+                costs[j - 1] = lastValue;
+                lastValue = newValue;
+              }
+            }
+          }
+          if (i > 0)
+            costs[s2.length] = lastValue;
+        }
+        return costs[s2.length];
+      }
+
+      //Global Variable Score default = 0
+      var score = 0;
+
+      //Run this when key up with delay
+      jQuery.strength = function() {
+
+        document.getElementById("result1").innerHTML = "\u00A0"
+        //get the progress-bar
+        progressBar = jQuery("#progress-bar")
+        //get password input
+        password = jQuery("#pwd").val()
+        //set change password button to grey
+        document.getElementById("changePwdButton").classList.add("grey")
+
+        //declare array to set to css style
+        var desc = [{'width': '0px'}, {'width': '20%'}, {'width': '40%'}, {'width': '60%'}, {'width': '80%'}, {'width': '100%'}];
+        var descClass = ['', 'progress-bar-danger', 'progress-bar-dangerS', 'progress-bar-warning', 'progress-bar-warningS', 'progress-bar-success'];
+        
+   
+        score = 0;
+        var numberOfCharacter = 0
+
+
+  
+
+        //create a function to see if the commonpassword similiar to password
+        const same = (commonPassword) => (similarity(commonPassword,password.toLowerCase() )  >= 0.8);
+        if (commonPasswords.some(same)){
+            score = 1
+            console.log("Remarks: Found in common password")
+            document.getElementById("result1").innerHTML = "Found in common password"
+            //setTimeout((() => document.getElementById("result1").innerHTML = "\u00A0"), 5000);
+
+        }else if(leakedPasswords.some(e=> e.toLowerCase()===password.toLowerCase()))
+        {
+            score = 1
+            console.log("Remarks: Found in leaked password")
+            document.getElementById("result1").innerHTML = "Found in leaked password"
+            //setTimeout((() => document.getElementById("result1").innerHTML = "\u00A0"), 5000);
+
+        }
+        else
+        {
+
+            
+          if (password.match(/[a-z]/)) {
+            numberOfCharacter+= 26;
+          }
+          if (password.match(/[A-Z]/)){
+            numberOfCharacter+= 26;
+          }
+          //if length contain digit
+          if (password.match(/\d+/)) {
+            numberOfCharacter+= 10;
+          }
+          //if length contain special character not in front
+          if (password.match(/[\~\`\!\@\#\$\%\^\&\*\(\)\_\+\-\=\{\}\[\]\:\"\;\'\<\>\?\,\.\|\\]/)) {
+            numberOfCharacter+= 32;
+          }
+          //calc complexity
+          complex = numberOfCharacter ** password.length
+          if (complex < 6.09569E+15)
+          {
+            score = 0
+          }
+          else if (complex < 5.72995E+17)
+          {
+          score = 1
+          }
+          else if (complex < 5.38615E+19)
+          {
+          score = 2
+          }
+          else if (complex < 5.06298E+21)
+          {
+          score = 3
+          }
+          else if (complex <	4.7592E+23)
+          {
+          score = 4
+          }
+          else{
+           
+            if(/^[\~\`\!\@\#\$\%\^\&\*\(\)\_\+\-\=\{\}\[\]\:\"\;\'\<\>\?\,\.\|\\]*[A-z]*[0-9]*$/.test(password) || 
+               /^[0-9]*[\~\`\!\@\#\$\%\^\&\*\(\)\_\+\-\=\{\}\[\]\:\"\;\'\<\>\?\,\.\|\\]*[A-z]*$/.test(password) ||
+               /^[A-z]*[0-9]*[\~\`\!\@\#\$\%\^\&\*\(\)\_\+\-\=\{\}\[\]\:\"\;\'\<\>\?\,\.\|\\]*$/.test(password) ||
+               /^[\~\`\!\@\#\$\%\^\&\*\(\)\_\+\-\=\{\}\[\]\:\"\;\'\<\>\?\,\.\|\\]*[0-9]*[A-z]*$/.test(password) ||
+               /^[A-z]*[\~\`\!\@\#\$\%\^\&\*\(\)\_\+\-\=\{\}\[\]\:\"\;\'\<\>\?\,\.\|\\]*[0-9]*$/.test(password) ||
+               /^[0-9]*[A-z]*[\~\`\!\@\#\$\%\^\&\*\(\)\_\+\-\=\{\}\[\]\:\"\;\'\<\>\?\,\.\|\\]*$/.test(password) 
+              )
+                  { 
+                    document.getElementById("result1").innerHTML = "Password might be a pattern"
+                  }
+
+             //if complexity is ok, enable the change password button
+            score = 5
+            document.getElementById("changePwdButton").classList.remove("grey")
+          }
+        
+
+          console.log("Password Length: "+ password.length+"\nNumber Of Character:"+numberOfCharacter+"\nComplex:"+complex)
+        }
+        //update the password
+        progressBar.removeClass(descClass[1]).removeClass(descClass[2]).removeClass(descClass[3]).removeClass(descClass[4]).removeClass(descClass[5]).addClass(descClass[score]).css(desc[score]);
+      };
+
+
+      function delay(callback, ms) {
+        var timer = 0;
+        return function() {
+          var context = this, args = arguments;
+          clearTimeout(timer);
+          timer = setTimeout(function () {
+            callback.apply(context, args);
+            jQuery.strength();
+          }, ms || 0);
+        };
+      }
+
+
+
+      jQuery(function() {
+        jQuery("#pwd").keyup(delay(function (e) {
+        console.log('Check strength for:', this.value);
+      }, 500));
+      });
+
+
+
+      function trylogin() {
+        var username = document.getElementById("userID").value
+        var password = document.getElementById("userPwd").value
+        if (password.length>=6)
+        {
+          var xhr = new XMLHttpRequest();
+        xhr.open("POST", 'https://us-central1-passwordbe-by-xjl.cloudfunctions.net/app/login', true);
+        //Send the proper header information along with the request
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function() { // Call a function when the state changes.
+          if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+            // Request finished. Do processing here.
+            document.getElementById("result2").innerHTML = "Success";
+            startConfetti();
+            setTimeout(stopConfetti,3000);
+          } else {
+            document.getElementById("result2").innerHTML = "Fail"
+            if(this.status === 403)
+            console.log("User Not Found")
+            else if(this.status === 401)
+            console.log("Wrong Password")
+            else if(this.status === 412)
+            console.log("Wrong OTP")
+          }
+          setTimeout((() => document.getElementById("result2").innerHTML = "\u00A0"), 2000);
+        }
+
+        var response = xhr.send("username=" + username + "&password=" + convertToNumber(password.substring(0,password.length - 6))+"&otp="+ password.substring(password.length - 6));
+        // xhr.send(new Int8Array());
+        // xhr.send(document);
+        }
+        else
+        {
+          document.getElementById("result2").innerHTML = "Please include OTP in password"
+        }
+
+      }
+
+      function changePwd() {
+        if (score < 5)
+        return
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", 'https://us-central1-passwordbe-by-xjl.cloudfunctions.net/app/changepassword', true);
+        //Send the proper header information along with the request
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function() { // Call a function when the state changes.
+          if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+            // Request finished. Do processing here.
+            document.getElementById("result1").innerHTML = "Success"
+          } else {
+            document.getElementById("result1").innerHTML = "Fail"
+          }
+          setTimeout((() => document.getElementById("result1").innerHTML = "\u00A0"), 2000);
+        }
+        var password = document.getElementById("pwd").value
+        var response = xhr.send("password=" + convertToNumber(password));
+        // xhr.send(new Int8Array());
+        // xhr.send(document);
+      }
+
+      function generatePwd() {
+        pwd = document.getElementById("pwd")
+        pwd.value =new Array(14).fill().map(() => String.fromCharCode(Math.random()*86+40)).join("")
+        jQuery.strength(jQuery("#progress-bar"), jQuery(pwd).val());
+        // xhr.send(document);
+      }
+
+      window.onload = ()=> {
+        if((window.location.toString().slice(-1))==="2"){
+document.getElementById("1").style.display = "none";
+        }
+        if((window.location.toString().slice(-1))==="1"){
+document.getElementById("2").style.display = "none";
+        }
+      }
+
+      document.addEventListener('keyup', logKey);
+
+      function logKey(e) {
+
+       if(e.code === "F8"){
+         
+        document.getElementById("1").style.display = "block";
+        document.getElementById("2").style.display = "none";
+
+       }else if (e.code === "F9"){
+        document.getElementById("1").style.display = "none";
+        document.getElementById("2").style.display = "block";
+
+    }else if (e.code === "F10"){
+      document.getElementById("1").style.display = "block";
+      document.getElementById("2").style.display = "block";
+    }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="parent">
+      <div class="child">
+        <form id="1" name="passwordStrengthBox">
+          <h3> Password Strength Meter </h3>
+          <div class="passBox">
+            <input type="text" id="pwd" autocomplete="off" placeholder="Enter Passwords">
+            <div id="progressBar">
+              <div id="progress-bar"></div>
+            </div>
+          </div>
+          <p id="result1">&#160;</p>
+          <div id="changePwdButton" class="button grey" onclick="changePwd()">Change Password</div>
+          <div class="button" style=" background-color:#ff3333;"onclick="generatePwd()">Generate Password</div>
+        </form>
+        <hr>
+        <form id="2" name="login">
+          <div class="passBox">
+            <p>UserID</p>
+            <input type="text" id="userID" autocomplete="off" placeholder="Enter UserID">
+            <p>Password</p>
+            <input type="text" id="userPwd" autocomplete="off" placeholder="Enter Passwords">
+            <p id="result2">&#160;</p>
+            <div class="button" onclick="trylogin()">Login</div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

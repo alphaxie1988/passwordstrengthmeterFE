@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>One Time Password</title>
+    <meta name="description" content="A simple HTML5 Template for new projects.">
+    <meta name="author" content="SitePoint">
+    <meta property="og:title" content="A Basic HTML5 Template">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.sitepoint.com/a-basic-html5-template/">
+    <meta property="og:description" content="A simple HTML5 Template for new projects.">
+    <meta property="og:image" content="image.png">
+    <link rel="icon" href="/favicon.ico">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+      p {
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        font-size: x-large;
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 6px;
+        border: 1px solid #ddd;
+        border-radius: 50px;
+        padding: 10px 20px;
+        border: 2px solid #999;
+      }
+
+      .button {
+        cursor: pointer;
+        display: inline-block;
+        padding: 0.7em 1.7em;
+        margin: 0 0.3em 0.3em 0;
+        border-radius: 0.2em;
+        box-sizing: border-box;
+        text-decoration: none;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 400;
+        color: #FFFFFF;
+        background-color: #3369ff;
+        box-shadow: inset 0 -0.6em 1em -0.35em rgba(0, 0, 0, 0.17), inset 0 0.6em 2em -0.3em rgba(255, 255, 255, 0.15), inset 0 0 0em 0.05em rgba(255, 255, 255, 0.12);
+        text-align: center;
+        position: relative;
+      }
+
+      .button:active {
+        box-shadow: inset 0 0.6em 2em -0.3em rgba(0, 0, 0, 0.15), inset 0 0 0em 0.05em rgba(255, 255, 255, 0.12);
+      }
+
+      @media all and (max-width:30em) {
+        .button {
+          display: block;
+          margin: 0.4em auto;
+        }
+      }
+
+      body {
+        height: 100%;
+        background-color: lightgrey;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .parent {
+        height: 95vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .child {
+        border-radius: 10px;
+        padding: 30px;
+        background: white;
+        width: 400px;
+      }
+    </style>
+    <script>
+      function copyOTP() {
+        /* Get the text field */
+        
+ 
+        var copyText = document.getElementById("token");
+
+        /* Copy the text inside the text field */
+        navigator.clipboard.writeText(copyText.innerHTML);
+        console.log(copyText.innerHTML)
+
+      }
+      
+      const fromBase64 = base64String => Uint8Array.from(atob(base64String), c => c.charCodeAt(0));
+      const getPkcs8Der = pkcs8Pem => {
+        pkcs8Pem = pkcs8Pem.replace(/[\r\n]+/gm, "");
+        const pkcs8PemHeader = "-----BEGIN PRIVATE KEY-----";
+        const pkcs8PemFooter = "-----END PRIVATE KEY-----";
+        pkcs8Pem = pkcs8Pem.substring(pkcs8PemHeader.length, pkcs8Pem.length - pkcs8PemFooter.length);
+        return fromBase64(pkcs8Pem);
+      }
+      async function importPrivateKey(pkcs8Pem) {
+        return await window.crypto.subtle.importKey("pkcs8", getPkcs8Der(pkcs8Pem), {
+            name: "RSA-OAEP",
+            hash: "SHA-1", // Replace SHA-256 with SHA-1
+          }, true,
+          ["decrypt"]);
+      }
+      async function decryptRSA(key, ciphertext) {
+        let decrypted = await window.crypto.subtle.decrypt({
+          name: "RSA-OAEP"
+        }, key, ciphertext);
+        const dec = new TextDecoder();
+        return dec.decode(decrypted);
+      }
+      let key = ""
+      window.onload = init;
+      async function init() {
+        if (localStorage.getItem('privateKey') === null) {
+          let privatekeyInput = prompt("Please enter your private key", "");
+          if (privatekeyInput.length !== 0) {
+            localStorage.setItem('privateKey', privatekeyInput);
+          } else {
+            alert("Please enter a valid private key")
+          }
+        }
+        const privateKey = '-----BEGIN PRIVATE KEY-----' + localStorage.getItem('privateKey') + '-----END PRIVATE KEY-----';
+        key = await importPrivateKey(privateKey);
+        console.log(key)
+        const Http = new XMLHttpRequest();
+        const url = 'https://us-central1-passwordbe-by-xjl.cloudfunctions.net/app/getOTP';
+        Http.open("GET", url);
+        Http.send();
+        Http.onreadystatechange = (e) => {
+          if (Http.responseText) {
+            console.log(Http.responseText)
+            try {
+              importPrivateKey(privateKey).then(key => {
+                decryptRSA(key, fromBase64(Http.responseText)).then(decrypted => {
+                  console.log(decrypted)
+                  document.getElementById("token").innerHTML = decrypted;
+                })
+              });
+            } catch (error) {
+              document.getElementById("token").innerHTML = "Invalid Private Key";
+              console.log(error);
+            }
+          }
+        }
+        // setInterval(function(){ init(); },30000);
+      }
+
+      function deletePrivateKey() {
+        localStorage.clear();
+        location.reload();
+      }
+    </script>
+  </head>
+  <body>
+    <div class="parent">
+      <div class="child">
+        <p id="token"  onclick="copyOTP()">000000</p>
+        <div class="button" onclick="init()">Refresh</div>
+
+        <div class="button" style="  background-color:#ff3333;" onclick="deletePrivateKey()">Delete Private Key</div>
+        <div style="margin-top:30px;cursor: pointer;font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;"onclick="window.open('https://www.devglan.com/online-tools/rsa-encryption-decryption')">Generate new Private Key</div>
+      </div>
+    </div>
+  </body>
+</html>
